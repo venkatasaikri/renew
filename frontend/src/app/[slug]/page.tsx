@@ -3,8 +3,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 async function getPage(slug: string) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
   try {
-    const res = await fetch(`http://backend:5000/api/content/${slug}`, {
+    const res = await fetch(`${apiUrl}/content/${slug}`, {
       next: { revalidate: 60 } // Next.js App Router ISR
     });
     if (!res.ok) {
@@ -13,20 +14,8 @@ async function getPage(slug: string) {
     }
     return res.json();
   } catch (err) {
-    // Fallback to localhost if not in docker
-    try {
-      const resFallback = await fetch(`http://localhost:5000/api/content/${slug}`, {
-        next: { revalidate: 60 }
-      });
-      if (!resFallback.ok) {
-        if (resFallback.status === 404) return null;
-        throw new Error('Failed to fetch data');
-      }
-      return resFallback.json();
-    } catch (e) {
-      console.error(e);
-      return null;
-    }
+    console.error(err);
+    return null;
   }
 }
 

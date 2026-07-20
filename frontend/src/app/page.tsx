@@ -1,23 +1,16 @@
 import Link from 'next/link';
 
 async function getPages() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
   try {
-    const res = await fetch(`http://backend:5000/api/content`, {
+    const res = await fetch(`${apiUrl}/content`, {
       next: { revalidate: 60 }
     });
     if (!res.ok) throw new Error('Failed to fetch data');
     return res.json();
   } catch (err) {
-    try {
-      const resFallback = await fetch(`http://localhost:5000/api/content`, {
-        next: { revalidate: 60 }
-      });
-      if (!resFallback.ok) throw new Error('Failed to fetch data');
-      return resFallback.json();
-    } catch (e) {
-      console.error(e);
-      return [];
-    }
+    console.error(err);
+    return [];
   }
 }
 
