@@ -18,7 +18,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     await newUser.save();
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET || 'secret', { expiresIn: '1d' });
-    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 });
+    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
     res.status(201).json({ message: 'Registered successfully', user: { username: newUser.username } });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
@@ -38,7 +38,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         await newUser.save();
         
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET || 'secret', { expiresIn: '1d' });
-        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 });
+        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
         res.json({ message: 'Logged in successfully', user: { username: newUser.username } });
         return;
       }
@@ -53,7 +53,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secret', { expiresIn: '1d' });
-    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 });
+    res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
     res.json({ message: 'Logged in successfully', user: { username: user.username } });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
