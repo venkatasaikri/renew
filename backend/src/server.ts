@@ -15,8 +15,11 @@ console.log("ACTUAL URI IS:", MONGO_URI);
 
 // Middleware
 app.use(cors({
-  origin: process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace('/api', '') : 'http://localhost:3000',
-  credentials: true, // Allow cookies to be sent
+  origin: function (origin, callback) {
+    // Allow any origin to connect (simplest fix for deployment)
+    callback(null, true);
+  },
+  credentials: true,
 }));
 app.use(express.json());
 app.use(cookieParser());
